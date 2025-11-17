@@ -1,17 +1,20 @@
 import express, { json } from 'express';
-import cors from 'cors';   // ← agregar
-const app = express();
+import cors from 'cors';
 import router from "./routes/index.routes.js";
 
+const app = express();
 
-
-
-// Habilitar CORS para Angular
+// CORS para LOCAL y PRODUCCIÓN
 app.use(cors({
-    origin: 'http://localhost:4200',   // permitir Angular local
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+  origin: [
+    'http://localhost:4200',
+    'https://portal-paciente-front-44c5.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
+
 
 app.use(json());
 

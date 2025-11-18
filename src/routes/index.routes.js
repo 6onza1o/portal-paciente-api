@@ -50,9 +50,10 @@ router.post("/login", async (req, res) => {
   // 2. Buscar usuario_sistema
   const usuarioQuery = await pool.query(
     `
-    SELECT clave, activo
-    FROM usuario_sistema
-    WHERE id_funcionario = $1
+    SELECT sistema.clave, sistema.activo, perfil.id_perfil
+    FROM usuario_sistema sistema
+    LEFT JOIN usuario_perfil perfil on perfil.id_usu_sistema = sistema.id_usu_sistema
+    WHERE sistema.id_funcionario = $1
   `,
     [funcionario.id_funcionario]
   );
@@ -96,9 +97,9 @@ router.post("/login", async (req, res) => {
         error: "",
         respuesta: "Login OK",
         token: generarToken(funcionario.id_funcionario),
-        personal: {'nombre': funcionario.nombre_funcionario,'apellido_paterno': funcionario.apellido_paterno,'apellido_materno': funcionario.apellido_materno}
+        personal: {'nombre': funcionario.nombre_funcionario,'apellido_paterno': funcionario.apellido_paterno,'apellido_materno': funcionario.apellido_materno, 'id_perfil': usuario.id_perfil}
     };
- 
+      
   res.status(200).send(respuesta)
 
 //   return res.json({

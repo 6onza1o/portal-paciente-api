@@ -12,7 +12,7 @@ app.use('/api', router);
 if (process.env.NODE_ENV !== 'production') {
     const PORT = 3000;
     app.listen(PORT, () => {
-        console.log(`🚀 Servidor local en http://localhost:${PORT}`);
+        console.log(`🚀 Servidor local v2 en http://localhost:${PORT}`);
     });
 }
 

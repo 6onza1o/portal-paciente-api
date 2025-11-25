@@ -85,6 +85,83 @@ router.post("/login", async (req, res) => {
    ENDPOINTS PARA CONSUMIR LAS VISTAS
 ===================================================== */
 
+router.post("/solicitud", async (req, res) => {
+  try {
+    const {
+      identificador,
+      episodio,
+      fecha_solicitud,
+      tipo_solicitud,
+      observacion,
+      id_estado,
+      glosa_estado,
+      correo_contacto
+    } = req.body;
+
+    const query = `
+      SELECT insertar_solicitud(
+        $1, $2, $3, $4, $5, $6, $7, $8
+      ) AS data;
+    `;
+
+    const values = [
+      identificador,
+      episodio,
+      fecha_solicitud,
+      tipo_solicitud,
+      observacion,
+      id_estado,
+      glosa_estado,
+      correo_contacto
+    ];
+
+    const result = await pool.query(query, values);
+    res.json({ ok: true, data: result.rows[0].data });
+
+  } catch (error) {
+    console.error("Error al guardar solicitud:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+
+
+router.post("/retroalimentacion", async (req, res) => {
+  try {
+    const {
+      identificador_emisor,
+      identificador_afectado,
+      fecha_solicitud,
+      id_tipo,
+      glosa_tipo,
+      observacion
+    } = req.body;
+
+    // Query que llama a la función SQL
+    const query = `
+      SELECT insertar_retroalimentacion(
+        $1, $2, $3, $4, $5, $6
+      ) AS data;
+    `;
+
+    const values = [
+      identificador_emisor,
+      identificador_afectado,
+      fecha_solicitud,
+      1,
+      glosa_tipo,
+      observacion
+    ];
+
+    const result = await pool.query(query, values);
+    return res.json({ ok: true, data: result.rows[0].data });
+
+  } catch (error) {
+    console.error("Error al guardar retroalimentación:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
 /* 1. OBTENER PACIENTE POR IDENTIFICADOR */
 router.get("/paciente/:identificador", async (req, res) => {
   const { identificador } = req.params;

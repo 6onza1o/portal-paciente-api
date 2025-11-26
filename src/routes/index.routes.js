@@ -84,6 +84,49 @@ router.post("/login", async (req, res) => {
 /* =====================================================
    ENDPOINTS PARA CONSUMIR LAS VISTAS
 ===================================================== */
+router.put("/paciente/actualizar", async (req, res) => {
+  try {
+    const {
+      identificador,
+      fecha_nacimiento,
+      pais,
+      sexo,
+      genero,
+      prevision,
+      religion,
+      estado_civil,
+      pueblo_indigena,
+      ocupacion
+    } = req.body;
+
+    const query = `
+      SELECT actualizar_paciente(
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10
+      ) AS data;
+    `;
+
+    const values = [
+      identificador,
+      fecha_nacimiento,
+      pais,
+      sexo,
+      genero,
+      prevision,
+      religion,
+      estado_civil,
+      pueblo_indigena,
+      ocupacion
+    ]; 
+    
+    const result = await pool.query(query, values);
+
+    return res.json({ ok: true, data: result.rows[0].data });
+  } catch (error) {
+    console.error("Error al actualizar paciente:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
 
 router.post("/solicitud", async (req, res) => {
   try {
